@@ -1,0 +1,31 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Expenses collection
+    match /expenses/{expenseId} {
+      // Allow read/write if the user is part of the shared ledger
+      // For a simple couple's app, we can allow any authenticated user to read/write
+      // but in a production app, we'd check if the user belongs to a specific 'group' or 'ledger'
+      allow read, write: if isAuthenticated();
+    }
+
+    // Budgets collection
+    match /budgets/{budgetId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // User profiles
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+  }
+}

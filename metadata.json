@@ -1,0 +1,5 @@
+{
+  "name": "KallyTally",
+  "description": "A shared expense tracker for couples with Splitwise-style dashboards and budget tracking.",
+  "requestFramePermissions": []
+}
